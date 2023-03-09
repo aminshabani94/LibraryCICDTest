@@ -53,8 +53,8 @@ publishing {
             url = uri("https://maven.pkg.github.com/aminshabani94/LibraryCICDTest")
 
             credentials {
-                username = "aminshabani94"
-                password = "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"
+                username = System.getenv("GPR_USER")
+                password = System.getenv("GPR_KEY")
             }
         }
     }
