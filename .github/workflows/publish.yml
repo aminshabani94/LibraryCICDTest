@@ -1,11 +1,5 @@
 name: Release
 
-permissions:
-  # All other permissions are set to none
-  checks: write
-  contents: read
-  pull-requests: write
-
 on:
   push:
 
@@ -28,11 +22,11 @@ jobs:
       - name: Build AAR
         run: ./gradlew assemble
 
-#      - name: Publish to GitHub Package Registry
-#        run: ./gradlew publish
-#        env:
-#          GPR_USER: ${{ github.actor }}
-#          GPR_KEY: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish to GitHub Package Registry
+        run: ./gradlew publish
+        env:
+          GPR_USER: ${{ github.actor }}
+          GPR_KEY: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Release
         id: create_release
