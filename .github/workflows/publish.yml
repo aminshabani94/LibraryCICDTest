@@ -16,26 +16,17 @@ jobs:
         with:
           java-version: 11
 
-      - name: Cache Gradle and wrapper
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
       - name: Grant Permission for Gradlew to Execute
         run: chmod +x gradlew
 
       - name: Build AAR
         run: ./gradlew assemble
 
-      - name: Publish to GitHub Package Registry
-        run: ./gradlew publish
-        env:
-          GPR_USER: ${{ github.actor }}
-          GPR_KEY: ${{ secrets.GITHUB_TOKEN }}
+#      - name: Publish to GitHub Package Registry
+#        run: ./gradlew publish
+#        env:
+#          GPR_USER: ${{ github.actor }}
+#          GPR_KEY: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Release
         id: create_release
@@ -48,12 +39,12 @@ jobs:
           draft: true
           prerelease: false
 
-      - name: Upload Simple Library AAR 🗳
+      - name: Upload Simple Library AAR
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: simplelibrary/build/outputs/aar/simplelibrary-release.aar
-          asset_name: simple-library.aar
+          asset_path: simplelibrary/build/outputs/aar/app-release.aar
+          asset_name: app-release.aar
           asset_content_type: application/aar
