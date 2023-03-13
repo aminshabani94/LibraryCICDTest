@@ -1,8 +1,7 @@
 name: Release
 
 on:
-  push:
-    branches: [ master ]
+  pull_request:
 
 jobs:
   publish:
@@ -17,44 +16,35 @@ jobs:
         with:
           java-version: 11
 
-      - name: Cache Gradle and wrapper
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
       - name: Grant Permission for Gradlew to Execute
         run: chmod +x gradlew
 
       - name: Build AAR
-          run: bash ./gradlew :librarycicdtest:assemble
+        run: ./gradlew assemble
 
       - name: Publish to GitHub Package Registry
-          run: bash ./gradlew :librarycicdtest:publish
-          env:
-            GPR_USER: ${{ github.actor }}
-            GPR_KEY: ${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew publish
+        env:
+          GPR_USER: ${{ github.actor }}
+          GPR_KEY: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Release
-          id: create_release
-          uses: actions/create-release@v1
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          with:
-            tag_name: ${{ github.ref }}
-            release_name: ${{ github.ref }}
-            draft: true
-            prerelease: false
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          draft: true
+          prerelease: false
 
-      - name: Upload Simple Library AAR 🗳
-          uses: actions/upload-release-asset@v1
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          with:
-            upload_url: ${{ steps.create_release.outputs.upload_url }}
-            asset_path: simplelibrary/build/outputs/aar/simplelibrary-release.aar
-            asset_name: simple-library.aar
-            asset_content_type: application/aar
+      - name: Upload Simple Library AAR
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: simplelibrary/build/outputs/aar/app-release.aar
+          asset_name: app-release.aar
+          asset_content_type: application/aar
