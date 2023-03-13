@@ -1,7 +1,7 @@
 name: Release
 
 on:
-  push:
+  pull_request:
 
 jobs:
   publish:
@@ -26,7 +26,7 @@ jobs:
         run: ./gradlew publish
         env:
           GPR_USER: ${{ github.actor }}
-          GPR_KEY: ${{ secrets.GPR_TOKEN }}
+          GPR_KEY: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Release
         id: create_release
